@@ -5,6 +5,7 @@ This class will be the “base” of all other classes in this project
 
 import uuid
 from datetime import datetime
+from models import storage
 
 
 class BaseModel:
@@ -18,6 +19,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.utcnow()
             self.updated_at = self.created_at
+            storage.new(self)
         else:
             for key, value in kwargs.items():
                 if key != "__class__":
@@ -42,6 +44,8 @@ class BaseModel:
             None
         """
         self.updated_at = datetime.utcnow()
+        storage.new(self)
+        storage.save()
 
     def to_dict(self):
         """returns a dictionary containing all
