@@ -4,6 +4,7 @@ This class contains the entry point of the command interpreter
 """
 
 import cmd
+from importlib import import_module
 
 
 class HBNBCommand(cmd.Cmd):
@@ -22,7 +23,19 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         "Creates a new instance of class"
-        args = self.validate_arg(arg, False)
+        validated = self.validate_arg(arg, False)
+        if validated:
+            args = arg.split()
+            module_path = self.get_module_path(args[0])
+            module = import_module(module_path)
+            instance = getattr(module, args[0])()
+            instance.save()
+            print(instance.id)
+            return False
+    
+    def get_module_path(self, classname):
+        classpaths = {"BaseModel": "base_model"}
+        return "models.{}".format(classpaths[classname])
     
     def validate_arg(self, arg, check_for_id):
         """
@@ -44,6 +57,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
                 return False
             #check if instance
+        return True
 
 
 if __name__ == '__main__':
