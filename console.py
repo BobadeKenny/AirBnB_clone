@@ -53,6 +53,22 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
         return False
 
+    def do_destroy(self, arg):
+        """
+        Deletes an instance based on the class name and id
+        Ex: $ destroy BaseModel 1234-1234-1234
+        """
+        validated = self.validate_arg(arg, True)
+        if validated:
+            args = arg.split()
+            key = "{}.{}".format(args[0], args[1])
+            if key in models.storage.all():
+                models.storage.all().pop(key)
+                models.storage.save()
+            else:
+                print("** no instance found **")
+        return False
+
     def get_module_path(self, classname):
         classpaths = {"BaseModel": "base_model"}
         return "models.{}".format(classpaths[classname])
