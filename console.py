@@ -5,6 +5,7 @@ This class contains the entry point of the command interpreter
 
 import cmd
 from importlib import import_module
+import models
 
 
 class HBNBCommand(cmd.Cmd):
@@ -31,12 +32,31 @@ class HBNBCommand(cmd.Cmd):
             instance = getattr(module, args[0])()
             instance.save()
             print(instance.id)
-            return False
-    
+        return False
+
+    def do_show(self, arg):
+        """
+        Prints the string representation of an instance
+        based on the class name and id.
+        Ex: $ show BaseModel 1234-1234-1234.
+        """
+        validated = self.validate_arg(arg, True)
+        if validated:
+            args = arg.split()
+            key = "{}.{}".format(args[0], args[1])
+            if key in models.storage.all():
+                module_path = self.get_module_path(args[0])
+                module = import_module(module_path)
+                instance = getattr(module, args[0])(models.storage.all()[key])
+                print(instance)
+            else:
+                print("** no instance found **")
+        return False
+
     def get_module_path(self, classname):
         classpaths = {"BaseModel": "base_model"}
         return "models.{}".format(classpaths[classname])
-    
+
     def validate_arg(self, arg, check_for_id):
         """
         validate argument string
@@ -56,7 +76,7 @@ class HBNBCommand(cmd.Cmd):
             if len(args) < 2:
                 print("** instance id missing **")
                 return False
-            #check if instance
+            # check if instance exists for id
         return True
 
 
