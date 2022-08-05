@@ -69,6 +69,37 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
         return False
 
+    def do_all(self, arg):
+        """
+        Prints all string representation of all instances based or not on the class name.
+        Ex: $ all BaseModel or $ all
+        """
+        args = arg.split()
+        instances = []
+        if len(args) == 0:
+            instance_dict = models.storage.all().copy()
+            for key, value in instance_dict.items():
+                classname = key.split(".")[0]
+                module_path = self.get_module_path(classname)
+                module = import_module(module_path)
+                instance = getattr(module, classname)(value)
+                instances.append(str(instance))
+        else:
+            validated = self.validate_arg(arg, False)
+            if validated:
+                instance_dict = models.storage.all().copy()
+                for key, value in instance_dict.items():
+                    classname = key.split(".")[0]
+                    if classname == args[0]:
+                        module_path = self.get_module_path(classname)
+                        module = import_module(module_path)
+                        instance = getattr(module, classname)(value)
+                        instances.append(str(instance))
+            else:
+                return False
+        print(instances)
+        return False
+
     def get_module_path(self, classname):
         classpaths = {"BaseModel": "base_model"}
         return "models.{}".format(classpaths[classname])
