@@ -5,6 +5,7 @@ This class contains the entry point of the command interpreter
 
 import cmd
 from importlib import import_module
+import shlex
 import models
 
 
@@ -71,7 +72,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, arg):
         """
-        Prints all string representation of all instances based or not on the class name.
+        Prints all string representation of all instances
+        based or not on the class name.
         Ex: $ all BaseModel or $ all
         """
         args = arg.split()
@@ -98,6 +100,32 @@ class HBNBCommand(cmd.Cmd):
             else:
                 return False
         print(instances)
+        return False
+
+    def do_update(self, arg):
+        """
+        Updates an instance based on the class name and id
+        by adding or updating attribute
+        Ex: $ update BaseModel 1234-1234-1234 email "aibnb@mail.com".
+        """
+        validated = self.validate_arg(arg, True)
+        if validated:
+            args = shlex.split(arg)
+            if len(args) < 3:
+                print("** attribute name missing **")
+            elif len(args) < 4:
+                print("** value missing **")
+            else:
+                key = "{}.{}".format(args[0], args[1])
+                if key in models.storage.all():
+                    module_path = self.get_module_path(args[0])
+                    module = import_module(module_path)
+                    instance = getattr(module, args[0])(models.storage.all()[key])
+                    setattr(instance, args[2], args[3].strip('\"'))
+                    print(instance)
+                    instance.save()
+                else:
+                    print("** no instance found **")
         return False
 
     def get_module_path(self, classname):
