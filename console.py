@@ -5,6 +5,7 @@ This class contains the entry point of the command interpreter
 
 import cmd
 from importlib import import_module
+from ast import literal_eval
 import shlex
 import models
 
@@ -48,7 +49,8 @@ class HBNBCommand(cmd.Cmd):
             if key in models.storage.all():
                 module_path = self.get_module_path(args[0])
                 module = import_module(module_path)
-                instance = getattr(module, args[0])(**models.storage.all()[key])
+                value = models.storage.all()[key]
+                instance = getattr(module, args[0])(**value)
                 print(instance)
             else:
                 print("** no instance found **")
@@ -123,8 +125,10 @@ class HBNBCommand(cmd.Cmd):
                     # models.storage.all()[key][args[2]] = args[3].strip('\"')
                     # models.storage.save()
                     # self.do_show("{} {}".format(args[0], args[1]))
-                    instance = getattr(module, args[0])(**models.storage.all()[key])
-                    setattr(instance, args[2], args[3].strip('\"'))
+                    value = models.storage.all()[key]
+                    instance = getattr(module, args[0])(**value)
+                    setattr(instance, args[2],
+                            literal_eval(args[3].strip('\"')))
                     instance.save()
                     print(instance)
                 else:
