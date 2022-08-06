@@ -140,7 +140,9 @@ class HBNBCommand(cmd.Cmd):
         return False
 
     def get_module_path(self, classname):
-        classpaths = {"BaseModel": "base_model", "User": "user"}
+        classpaths = {"BaseModel": "base_model", "User": "user",
+                      "State": "state", "Review": "review",
+                      "Place": "place", "City": "city", "Amenity", "amenity"}
         return "models.{}".format(classpaths[classname])
 
     def validate_arg(self, arg, check_for_id):
@@ -150,7 +152,8 @@ class HBNBCommand(cmd.Cmd):
             arg (string): argument string
             check_for_id (bool): check if id is present in arg
         """
-        classnames = ["BaseModel", "User"]
+        classnames = ["BaseModel", "User", "State",
+                      "Review", "Place", "City", "Amenity"]
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")

@@ -1,18 +1,15 @@
 #!/usr/bin/python3
 """
-the class User that inherits from BaseModel
+the class State that inherits from BaseModel
 """
 
 
 from models.base_model import BaseModel
 
 
-class User(BaseModel):
-    """User Class"""
-    email = ""
-    password = ""
-    first_name = ""
-    last_name = ""
+class State(BaseModel):
+    """State Class"""
+    name = ""
 
     def __init__(self, *args, **kwargs):
         """initialisation
