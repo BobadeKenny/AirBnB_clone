@@ -44,6 +44,7 @@ class BaseModel:
             None
         """
         self.updated_at = datetime.utcnow()
+        storage.new(self)
         storage.save()
 
     def to_dict(self):

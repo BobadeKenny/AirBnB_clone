@@ -48,7 +48,7 @@ class HBNBCommand(cmd.Cmd):
             if key in models.storage.all():
                 module_path = self.get_module_path(args[0])
                 module = import_module(module_path)
-                instance = getattr(module, args[0])(models.storage.all()[key])
+                instance = getattr(module, args[0])(**models.storage.all()[key])
                 print(instance)
             else:
                 print("** no instance found **")
@@ -84,7 +84,7 @@ class HBNBCommand(cmd.Cmd):
                 classname = key.split(".")[0]
                 module_path = self.get_module_path(classname)
                 module = import_module(module_path)
-                instance = getattr(module, classname)(value)
+                instance = getattr(module, classname)(**value)
                 instances.append(str(instance))
         else:
             validated = self.validate_arg(arg, False)
@@ -95,7 +95,7 @@ class HBNBCommand(cmd.Cmd):
                     if classname == args[0]:
                         module_path = self.get_module_path(classname)
                         module = import_module(module_path)
-                        instance = getattr(module, classname)(value)
+                        instance = getattr(module, classname)(**value)
                         instances.append(str(instance))
             else:
                 return False
@@ -120,10 +120,13 @@ class HBNBCommand(cmd.Cmd):
                 if key in models.storage.all():
                     module_path = self.get_module_path(args[0])
                     module = import_module(module_path)
-                    instance = getattr(module, args[0])(models.storage.all()[key])
+                    # models.storage.all()[key][args[2]] = args[3].strip('\"')
+                    # models.storage.save()
+                    # self.do_show("{} {}".format(args[0], args[1]))
+                    instance = getattr(module, args[0])(**models.storage.all()[key])
                     setattr(instance, args[2], args[3].strip('\"'))
-                    print(instance)
                     instance.save()
+                    print(instance)
                 else:
                     print("** no instance found **")
         return False
