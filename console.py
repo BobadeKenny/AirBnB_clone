@@ -24,6 +24,10 @@ class HBNBCommand(cmd.Cmd):
         "Quit command to exit the program"
         return True
 
+    def emptyline(self):
+        "Empty line override"
+        return False
+
     def do_create(self, arg):
         "Creates a new instance of class"
         validated = self.validate_arg(arg, False)
@@ -130,7 +134,7 @@ class HBNBCommand(cmd.Cmd):
                     try:
                         setattr(instance, args[2],
                                 literal_eval(args[3]))
-                    except ValueError, SyntaxError:
+                    except (ValueError, SyntaxError):
                         setattr(instance, args[2],
                                 args[3])
                     instance.save()
@@ -142,7 +146,7 @@ class HBNBCommand(cmd.Cmd):
     def get_module_path(self, classname):
         classpaths = {"BaseModel": "base_model", "User": "user",
                       "State": "state", "Review": "review",
-                      "Place": "place", "City": "city", "Amenity", "amenity"}
+                      "Place": "place", "City": "city", "Amenity": "amenity"}
         return "models.{}".format(classpaths[classname])
 
     def validate_arg(self, arg, check_for_id):
