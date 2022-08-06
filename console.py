@@ -127,8 +127,12 @@ class HBNBCommand(cmd.Cmd):
                     # self.do_show("{} {}".format(args[0], args[1]))
                     value = models.storage.all()[key]
                     instance = getattr(module, args[0])(**value)
-                    setattr(instance, args[2],
-                            literal_eval(args[3].strip('\"')))
+                    try:
+                        setattr(instance, args[2],
+                                literal_eval(args[3]))
+                    except ValueError, SyntaxError:
+                        setattr(instance, args[2],
+                                args[3])
                     instance.save()
                     print(instance)
                 else:
@@ -136,7 +140,7 @@ class HBNBCommand(cmd.Cmd):
         return False
 
     def get_module_path(self, classname):
-        classpaths = {"BaseModel": "base_model"}
+        classpaths = {"BaseModel": "base_model", "User": "user"}
         return "models.{}".format(classpaths[classname])
 
     def validate_arg(self, arg, check_for_id):
@@ -146,7 +150,7 @@ class HBNBCommand(cmd.Cmd):
             arg (string): argument string
             check_for_id (bool): check if id is present in arg
         """
-        classnames = ["BaseModel"]
+        classnames = ["BaseModel", "User"]
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
