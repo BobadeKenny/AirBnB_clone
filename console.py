@@ -149,7 +149,7 @@ class HBNBCommand(cmd.Cmd):
                     classname = key.split(".")[0]
                     if classname == args[0]:
                         instance += 1
-                print(instance)    
+                print(instance)
         return False
 
     def do_update(self, arg):
