@@ -7,6 +7,7 @@ import cmd
 from importlib import import_module
 from ast import literal_eval
 import shlex
+import re
 import models
 
 
@@ -15,6 +16,28 @@ class HBNBCommand(cmd.Cmd):
     entry point of the command interpreter:
     """
     prompt = "(hbnb) "
+
+    def default(self, line):
+        x = re.search(r"^\A[A-Z]\w+[.]\w+[(].*[)]$", line)
+        if x:
+            methods = {
+                "all": "do_all",
+                "show": "do_show",
+                "count": "do_count",
+                "destroy": "do_destroy",
+                "update": "do_update"
+            }
+            key = line.split(".")[1].split("(")[0]
+            if key in methods:
+                arg = "{} {}".format(
+                    line.split(".")[0], line[line.find("(")+1:line.find(")")]
+                    ).replace(",", " ").replace('"', "")
+                method = getattr(self, methods[key])
+                method(arg)
+            else:
+                self.stdout.write('*** Unknown syntax: %s\n' % line)
+        else:
+            self.stdout.write('*** Unknown syntax: %s\n' % line)
 
     def do_EOF(self, arg):
         "EOF to exit the program"
@@ -106,6 +129,27 @@ class HBNBCommand(cmd.Cmd):
             else:
                 return False
         print(instances)
+        return False
+
+    def do_count(self, arg):
+        """
+        Prints total number of instances
+        based or not on the class name.
+        Ex: $ count BaseModel or $ count
+        """
+        args = arg.split()
+        if len(args) == 0:
+            print(len(models.storage.all()))
+        else:
+            validated = self.validate_arg(arg, False)
+            instance = 0
+            if validated:
+                instance_dict = models.storage.all().copy()
+                for key, value in instance_dict.items():
+                    classname = key.split(".")[0]
+                    if classname == args[0]:
+                        instance += 1
+                print(instance)    
         return False
 
     def do_update(self, arg):

@@ -37,6 +37,10 @@ $ destroy BaseModel 1234-1234-1234
 ```bash
 $ all BaseModel or $ all
 ```
+* count - Prints the total number of instances based or not on the class name.
+```bash
+$ count BaseModel or $ count
+```
 * update - Updates an instance based on the class name and id by adding or updating attribute.
 ```bash
 $ update BaseModel 1234-1234-1234 email "aibnb@mail.com"
