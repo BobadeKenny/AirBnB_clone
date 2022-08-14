@@ -33,12 +33,12 @@
     margin: 0;
     padding-left: 30px;
 }
-.locations, .amenities {
+.filters .locations, .filters .amenities {
     height: 100%;
     width: 25%;
     line-height: 100%;
 }
-.locations {
+.filters .locations {
     border-right: 1px solid  #DDDDDD;
 }
 .popover {
@@ -53,7 +53,7 @@
     padding-top: 18px;
     padding-bottom: 20px;
 }
-.locations:hover > .popover, .amenities:hover > .popover {
+.filters .locations:hover > .popover, .filters .amenities:hover > .popover {
     display: block;
 }
 .popover ul {
